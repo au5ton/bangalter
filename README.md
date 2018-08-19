@@ -8,6 +8,10 @@ sync music to your Android device better
 ./bangalter.rb -i ~/Music/local -o /sdcard/Music -c 320k
 ```
 
+## Dependencies
+- `adb` installed and in your path (with debug settings enable on your device)
+- `ffmpeg` with libvorbis installed and in your path
+
 ## Planned functionality
 Script will:
 - Measure source folder size and compare to available storage space remaining on device

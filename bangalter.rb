@@ -5,6 +5,8 @@ require "find"
 require "artii"
 require "colorize"
 
+require_relative "lib/audio"
+
 LOGO_FONT = Artii::Base.new :font => "doom"
 LOGO = LOGO_FONT.asciify("bangalter").colorize(:red)
 
@@ -32,6 +34,10 @@ OptionParser.new do |opts|
     options[:yes] = y
   end
 
+  opts.on("-L", "Test transcode results by treating target folder as a local folder") do |l|
+    options[:local] = l
+  end
+
   opts.on("-h", "--help", "Prints this help") do
     puts opts
     exit
@@ -39,26 +45,45 @@ OptionParser.new do |opts|
 end.parse!
 
 # test for sufficient options
-# TODO
+is_good = true
+if options[:source_folder] == nil or File.directory?(options[:source_folder]) == false
+  puts "#{options[:source_folder]} source folder is not a directory"
+  is_good = false
+end
+if options[:compression] == nil
+  puts "Compression disabled"
+else
+  puts "Compression enabled (#{options[:compression]}kb/s)"
+end
+if !is_good
+  puts options
+  exit(1)
+end
+
+
 
 # test passed
 puts LOGO
 puts "options: #{options}"
 puts "ARGV: #{ARGV}"
 
+# TODO: check sizes against capacity
+
+
+# Transcode and copy according to settings
 
 total_size = 0
-
 Find.find(options[:source_folder]) do |path|
   if FileTest.directory?(path)
     if File.basename(path)[0] == ?.
-      Find.prune       # Don't look any further into this directory.
+      #Find.prune # Don't look any further into this directory.
     else
       next
     end
   else
     total_size += FileTest.size(path)
-    puts path
+
+    Audio.process_file(path: path, parsed_options: options)
   end
 end
 
@@ -76,5 +101,5 @@ puts "#{total_size} bytes"
 #
 # Getting only Used:
 # $ adb shell 'df /storage/emulated/' | awk '$4 ~ /[[:digit:]]+/ { print $3 }'
-#adb
+#
 # These can be added up
