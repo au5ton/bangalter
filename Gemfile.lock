@@ -1,0 +1,17 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    artii (2.1.2)
+    colorize (0.8.1)
+    mediainfo (1.0.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  artii
+  colorize
+  mediainfo
+
+BUNDLED WITH
+   1.16.1
